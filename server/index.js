@@ -28,4 +28,16 @@ io.on("connection", (socket) => {
       socket.emit("joinRejected");
     }
   });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+
+    for (const [code, id] of Object.entries(activeGames)) {
+      if (id === socket.id) {
+        delete activeGames[code];
+        console.log(`Game code ${code} removed`);
+        break;
+      }
+    }
+  });
 });
