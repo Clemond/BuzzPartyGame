@@ -5,6 +5,7 @@
   "scripts": {
     "start:server": "cd server && npm run start",
     "start:tv-client": "cd tv-client && npm start",
-    "start": "concurrently \"npm run start:server\" \"npm run start:tv-client\""
+    "start:mobile-app": "cd mobile-app && npm run ios",
+    "start": "concurrently \"npm run start:server\" \"npm run start:tv-client\" \"npm run start:mobile-app\""
   }
 }
