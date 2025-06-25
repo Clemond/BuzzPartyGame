@@ -6,8 +6,6 @@ const io = new Server(3001, {
   }
 });
 
-console.log("Server is running...");
-
 const activeGames = {};
 
 function generateJoinCode() {
@@ -15,27 +13,28 @@ function generateJoinCode() {
 }
 
 io.on("connection", (socket) => {
-  console.log("New client connected:", socket.id);
-
   const code = generateJoinCode();
   activeGames[code] = socket.id;
+  socket.join(code);
   socket.emit("gameCreated", code);
 
   socket.on("joinGame", (enteredCode) => {
     if (activeGames[enteredCode]) {
+      socket.join(enteredCode);
       socket.emit("joinAccepted");
     } else {
       socket.emit("joinRejected");
     }
   });
 
-  socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+  socket.on("usernameChosen", ({ gameCode, username }) => {
+    io.to(gameCode).emit("newPlayer", { username });
+  });
 
+  socket.on("disconnect", () => {
     for (const [code, id] of Object.entries(activeGames)) {
       if (id === socket.id) {
         delete activeGames[code];
-        console.log(`Game code ${code} removed`);
         break;
       }
     }
