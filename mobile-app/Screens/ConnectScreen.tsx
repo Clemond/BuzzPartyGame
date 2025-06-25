@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { getSocket } from "../utils/socket";
 import UseTypeNavigation from "../hooks/useTypeNavigation";
 
 export default function ConnectScreen() {
   const [code, setCode] = useState("");
-  const [connected, setConnected] = useState(false);
   const socket = getSocket();
   const navigation = UseTypeNavigation();
 
@@ -18,7 +17,6 @@ export default function ConnectScreen() {
     }
 
     socket.once("joinAccepted", () => {
-      console.log("✅ Connected to game!");
       navigation.navigate("CreateUsernameScreen", { gameCode: enteredCode });
     });
 
@@ -65,10 +63,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: "center",
     backgroundColor: "#fff"
-  },
-  success: {
-    fontSize: 24,
-    textAlign: "center",
-    color: "green"
   }
 });

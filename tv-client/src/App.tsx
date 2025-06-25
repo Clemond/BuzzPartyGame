@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import io from "socket.io-client";
 
 const socket = io("http://localhost:3001");
@@ -12,8 +12,6 @@ export default function App() {
       setGameCode(code);
     });
     socket.on("newPlayer", ({ username }: { username: string }) => {
-      console.log("TV received new player:", username);
-
       setPlayers((prev) => [...prev, username]);
     });
 
