@@ -19,6 +19,8 @@ io.on("connection", (socket) => {
 
   const code = generateJoinCode();
   activeGames[code] = socket.id;
+  socket.join(code);
+
   socket.emit("gameCreated", code);
 
   socket.on("joinGame", (enteredCode) => {
@@ -28,6 +30,12 @@ io.on("connection", (socket) => {
     } else {
       socket.emit("joinRejected");
     }
+  });
+
+  socket.on("usernameChosen", ({ gameCode, username }) => {
+    console.log(`User ${username} joined the game ${gameCode}`);
+
+    io.to(gameCode).emit("newPlayer", { username });
   });
 
   socket.on("disconnect", () => {
@@ -40,11 +48,5 @@ io.on("connection", (socket) => {
         break;
       }
     }
-  });
-
-  socket.on("usernameChosen", ({ gameCode, username }) => {
-    console.log(`User ${username} joined the game ${gameCode}`);
-
-    io.to(gameCode).emit("newPlayer", username);
   });
 });

@@ -27,7 +27,7 @@ export default function CreateUsernameScreen({ route }: Props) {
   }, []);
 
   const handleSubmit = () => {
-    socket.emit("usernameChosen", { gameCode, username: username });
+    socket.emit("usernameChosen", { gameCode, username });
   };
 
   return (
