@@ -1,50 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { getSocket } from "../utils/socket";
+import UseTypeNavigation from "../hooks/useTypeNavigation";
 
 export default function ConnectScreen() {
   const [code, setCode] = useState("");
   const [connected, setConnected] = useState(false);
   const socket = getSocket();
-
-  useEffect(() => {
-    socket.on("joinAccepted", () => {
-      setConnected(true);
-      console.log("✅ Connected to game!");
-    });
-
-    socket.on("joinRejected", () => {
-      Alert.alert("Invalid Code", "Please enter a valid game code.");
-    });
-
-    return () => {
-      socket.off("joinAccepted");
-      socket.off("joinRejected");
-    };
-  }, []);
+  const navigation = UseTypeNavigation();
 
   const handleSubmit = () => {
+    const enteredCode = code.trim();
+
+    if (enteredCode.length === 0) {
+      Alert.alert("Error", "Please enter a game code.");
+      return;
+    }
+
+    socket.once("joinAccepted", () => {
+      console.log("✅ Connected to game!");
+      navigation.navigate("CreateUsernameScreen", { gameCode: enteredCode });
+    });
+
+    socket.once("joinRejected", () => {
+      Alert.alert("Invalid Code", "Please enter a valid game code.");
+    });
     socket.emit("joinGame", code);
   };
 
   return (
     <View style={styles.container}>
-      {connected ? (
-        <Text style={styles.success}>You're in the game!</Text>
-      ) : (
-        <>
-          <Text style={styles.label}>Enter Game Code</Text>
-          <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            maxLength={6}
-            value={code}
-            onChangeText={setCode}
-            placeholder="123456"
-          />
-          <Button title="Join Game" onPress={handleSubmit} />
-        </>
-      )}
+      <Text style={styles.label}>Enter Game Code</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        maxLength={6}
+        value={code}
+        onChangeText={setCode}
+        placeholder="enter game code"
+      />
+      <Button title="Join Game" onPress={handleSubmit} />
     </View>
   );
 }
