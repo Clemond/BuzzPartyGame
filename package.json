@@ -6,6 +6,6 @@
     "start:server": "cd server && npm run start",
     "start:tv-client": "cd tv-client && npm start",
     "start:mobile-app": "cd mobile-app && npm run ios",
-    "start": "concurrently \"npm run start:server\" \"npm run start:tv-client\""
+    "start": "concurrently \"npm run start:server\" \"npm run start:tv-client\" \"npm run start:mobile-app\""
   }
 }

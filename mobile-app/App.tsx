@@ -1,18 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:3001");
 
 export default function App() {
   const [code, setCode] = useState("");
   const [connected, setConnected] = useState(false);
 
-  const handleSubmit = () => {
-    // TEMP: simulate correct code
-    if (code === "123456") {
+  useEffect(() => {
+    socket.on("joinAccepted", () => {
       setConnected(true);
       console.log("✅ Connected to game!");
-    } else {
+    });
+
+    socket.on("joinRejected", () => {
       Alert.alert("Invalid Code", "Please enter a valid game code.");
-    }
+    });
+
+    return () => {
+      socket.off("joinAccepted");
+      socket.off("joinRejected");
+    };
+  }, []);
+
+  const handleSubmit = () => {
+    socket.emit("joinGame", code);
   };
 
   return (
