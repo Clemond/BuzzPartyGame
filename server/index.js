@@ -23,6 +23,7 @@ io.on("connection", (socket) => {
 
   socket.on("joinGame", (enteredCode) => {
     if (activeGames[enteredCode]) {
+      socket.join(enteredCode);
       socket.emit("joinAccepted");
     } else {
       socket.emit("joinRejected");
@@ -39,5 +40,11 @@ io.on("connection", (socket) => {
         break;
       }
     }
+  });
+
+  socket.on("usernameChosen", ({ gameCode, username }) => {
+    console.log(`User ${username} joined the game ${gameCode}`);
+
+    io.to(gameCode).emit("newPlayer", username);
   });
 });
