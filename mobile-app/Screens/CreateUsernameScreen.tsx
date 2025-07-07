@@ -1,6 +1,6 @@
 import { RootStackParamList } from "../types/navigation.types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button,
   View,
@@ -8,7 +8,8 @@ import {
   Text,
   TextInput,
   ImageBackground,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import { getSocket } from "../utils/socket";
 
@@ -22,6 +23,16 @@ export default function CreateUsernameScreen({ route }: Props) {
   const handleSubmit = () => {
     socket.emit("usernameChosen", { gameCode, username });
   };
+
+  useEffect(() => {
+    socket.on("usernameRejected", ({ reason }) => {
+      Alert.alert("Oops!", reason);
+    });
+
+    return () => {
+      socket.off("usernameRejected");
+    };
+  }, []);
 
   return (
     <ImageBackground

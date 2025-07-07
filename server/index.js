@@ -14,7 +14,10 @@ function generateJoinCode() {
 
 io.on("connection", (socket) => {
   const code = generateJoinCode();
-  activeGames[code] = socket.id;
+  activeGames[code] = {
+    hostId: socket.id,
+    players: []
+  };
   socket.join(code);
   socket.emit("gameCreated", code);
 
@@ -28,7 +31,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("usernameChosen", ({ gameCode, username }) => {
-    io.to(gameCode).emit("newPlayer", { username });
+    const game = activeGames[gameCode];
+    if (!game) return;
+
+    if (game.players.includes(username)) {
+      socket.emit("usernameRejected", { reason: "Username already taken" });
+      return;
+    }
+
+    game.players.push(username);
+
+    io.to(gameCode).emit("playersUpdated", game.players);
   });
 
   socket.on("disconnect", () => {

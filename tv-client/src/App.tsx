@@ -11,13 +11,13 @@ export default function App() {
     socket.on("gameCreated", (code: string) => {
       setGameCode(code);
     });
-    socket.on("newPlayer", ({ username }: { username: string }) => {
-      setPlayers((prev) => [...prev, username]);
+    socket.on("playersUpdated", (updatedPlayers: string[]) => {
+      setPlayers(updatedPlayers);
     });
 
     return () => {
       socket.off("gameCreated");
-      socket.off("newPlayer");
+      socket.off("playersUpdated");
     };
   }, []);
 
