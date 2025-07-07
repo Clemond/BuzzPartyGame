@@ -1,7 +1,16 @@
 import { RootStackParamList } from "../types/navigation.types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useState } from "react";
-import { Button, View, StyleSheet, Text, TextInput } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Button,
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  ImageBackground,
+  TouchableOpacity,
+  Alert
+} from "react-native";
 import { getSocket } from "../utils/socket";
 
 type Props = NativeStackScreenProps<RootStackParamList, "CreateUsernameScreen">;
@@ -15,8 +24,22 @@ export default function CreateUsernameScreen({ route }: Props) {
     socket.emit("usernameChosen", { gameCode, username });
   };
 
+  useEffect(() => {
+    socket.on("usernameRejected", ({ reason }) => {
+      Alert.alert("Oops!", reason);
+    });
+
+    return () => {
+      socket.off("usernameRejected");
+    };
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require("../assets/buzz-game-bg.jpg")}
+      resizeMode="cover"
+      style={styles.container}
+    >
       <Text style={styles.label}>Enter Username</Text>
       <TextInput
         style={styles.input}
@@ -25,8 +48,10 @@ export default function CreateUsernameScreen({ route }: Props) {
         onChangeText={setUsername}
         placeholder="ex. quackshows"
       />
-      <Button title="Submit" onPress={handleSubmit} />
-    </View>
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Submit</Text>
+      </TouchableOpacity>
+    </ImageBackground>
   );
 }
 
@@ -35,21 +60,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 24,
-    backgroundColor: "#f7f7f7"
+    backgroundColor: "#f7f7f7",
+    gap: 20
   },
   label: {
     fontSize: 20,
-    marginBottom: 10,
-    textAlign: "center"
+    textAlign: "center",
+    color: "white"
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 20,
+    borderRadius: 15,
+    padding: 15,
     fontSize: 18,
     textAlign: "center",
     backgroundColor: "#fff"
+  },
+  button: {
+    backgroundColor: "#0277f9",
+    alignSelf: "center",
+    padding: 15,
+    borderRadius: 15
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 18
   }
 });

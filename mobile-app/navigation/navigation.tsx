@@ -7,7 +7,11 @@ export default function RootStack() {
   const Stack = createNativeStackNavigator<RootStackParamList>();
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false
+      }}
+    >
       <Stack.Screen name="ConnectScreen" component={ConnectScreen} />
       <Stack.Screen
         name="CreateUsernameScreen"
