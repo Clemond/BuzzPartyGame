@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
+import "./App.css";
 
 const socket = io("http://localhost:3001");
 
@@ -23,15 +24,15 @@ export default function App() {
 
   return (
     <div className="Container">
-      <h1>Lobby</h1>
-      <p>Join Code: {gameCode || "Generating..."}</p>
-      <div>
-        <h2>Players:</h2>
-        <ul>
-          {players.map((player, index) => (
-            <li key={index}>{player}</li>
-          ))}
-        </ul>
+      <h1>Welcome to the Lobby</h1>
+      <div className="JoinCode">{gameCode || "Generating..."}</div>
+      <h2>Players:</h2>
+      <div className="PlayerList">
+        {players.map((player, index) => (
+          <div className="PlayerCard" key={index}>
+            {player}
+          </div>
+        ))}
       </div>
     </div>
   );
