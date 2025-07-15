@@ -24,15 +24,17 @@ export default function App() {
 
   return (
     <div className="Container">
-      <h1>Lobby</h1>
+      <h1>Welcome to the Lobby</h1>
       <p>Join Code: {gameCode || "Generating..."}</p>
       <div>
         <h2>Players:</h2>
-        <ul>
+        <p>
           {players.map((player, index) => (
-            <li key={index}>{player}</li>
+            <p className="PlayerCard" key={index}>
+              {player}
+            </p>
           ))}
-        </ul>
+        </p>
       </div>
     </div>
   );

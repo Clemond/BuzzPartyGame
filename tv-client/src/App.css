@@ -8,3 +8,10 @@
   color: white;
   height: 100vh;
 }
+
+.PlayerCard {
+  padding: 5px;
+  border-style: solid;
+  border-color: white;
+  border-radius: 10px;
+}
