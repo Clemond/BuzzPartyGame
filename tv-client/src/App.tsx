@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import io from "socket.io-client";
 import "./App.css";
+import { SERVER_URL } from "./.ipConfig";
 
-const socket = io("http://localhost:3001");
+const socket = io(SERVER_URL);
 
 export default function App() {
   const [gameCode, setGameCode] = useState<string | null>(null);
